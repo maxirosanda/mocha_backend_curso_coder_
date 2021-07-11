@@ -1,21 +1,23 @@
-const assert = require('assert')
+const assert = require('chai').assert;
 var axios = require('axios');
 var FormData = require('form-data');
 var fs = require('fs');
 
 let id_producto = ""
 let url_producto =""
+let nombre_producto=""
 describe("Probar login y base de datos productos", ()=>{
-
-        it("Agregar un Producto",()=>{
-    
+  
+   
+        it("Agregar un Producto",async () => {
+          
     var data = new FormData();
     data.append('url', fs.createReadStream('/Users/maxi/Desktop/logo192.png'));
     data.append('nombre', 'mocha');
-    data.append('descripcion ', 'mocha');
+    data.append('descripcion ', 'descripcion mocha');
     data.append('precio', '344');
     data.append('stock', '42');
-    
+
     var config = {
       method: 'post',
       url: 'http://localhost:8080/productos',
@@ -28,19 +30,23 @@ describe("Probar login y base de datos productos", ()=>{
     
     axios(config)
     .then(function (response) {
-      console.log(JSON.stringify(response.data[0]));
       id_producto=JSON.stringify(response.data[0]._id)
       url_producto=JSON.stringify(response.data[0]._id)
+      nombre_producto=JSON.stringify(response.data[0].nombre)
+     
+    }).then(function(){
+      console.log(nombre_producto)
+      assert.equal(nombre_producto,'mocha')
+      
     })
     .catch(function (error) {
       console.log(error);
     });
-
+    
 })
 
-
 //------------------------------------------------------------------------------------------
-
+/*
 it("traer producto",()=>{
   var config = {
     method: 'get',
@@ -64,6 +70,7 @@ it("traer producto",()=>{
 //---------------------------------------------------------------------------------
 
 it("actualizar producto", async ()=>{
+
   var data = JSON.stringify({
     "nombre": "actualizar mocha19",
     "descripcion": "descripcion actualizada mocha",
@@ -117,6 +124,7 @@ it("borrar producto",()=>{
   .catch(function (error) {
     console.log(error);
   });
+ 
 })
-
+*/
 })
