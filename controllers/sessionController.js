@@ -49,7 +49,8 @@ module.exports = {
     },
 
     login: (req, res) => {
-        res.redirect("/");
+        //res.redirect("/");
+        res.send(req.user)
     },
 
     register: (req, res) => {
@@ -64,7 +65,8 @@ module.exports = {
             await req.session.destroy( err => {
                if(err) return err;
     
-            res.redirect("/login");
+            //res.redirect("/login");
+            res.json(user)
             })
          }
          catch (e) { loggerError.error(e) } 
@@ -72,3 +74,4 @@ module.exports = {
       
     }
 }
+

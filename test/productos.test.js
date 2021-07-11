@@ -3,20 +3,27 @@ var axios = require('axios');
 var FormData = require('form-data');
 var fs = require('fs');
 
-let id_producto = ""
-let url_producto =""
-let nombre_producto=""
-describe("Probar login y base de datos productos", ()=>{
+let id_producto =""
+let url_producto=""
+
+let nombre_producto="mocha3"
+let descripcion_producto="descricion mocha"
+let precio_producto=12000
+let stock_producto=32
+
+
+
+describe("Productos: crear,leer,actualizar y borrar", ()=>{
   
    
         it("Agregar un Producto",async () => {
           
     var data = new FormData();
     data.append('url', fs.createReadStream('/Users/maxi/Desktop/logo192.png'));
-    data.append('nombre', 'mocha');
-    data.append('descripcion ', 'descripcion mocha');
-    data.append('precio', '344');
-    data.append('stock', '42');
+    data.append('nombre', nombre_producto);
+    data.append('descripcion', descripcion_producto);
+    data.append('precio', precio_producto);
+    data.append('stock', stock_producto);
 
     var config = {
       method: 'post',
@@ -27,27 +34,27 @@ describe("Probar login y base de datos productos", ()=>{
       },
       data : data
     };
-    
-    axios(config)
-    .then(function (response) {
-      id_producto=JSON.stringify(response.data[0]._id)
-      url_producto=JSON.stringify(response.data[0]._id)
-      nombre_producto=JSON.stringify(response.data[0].nombre)
-     
-    }).then(function(){
-      console.log(nombre_producto)
-      assert.equal(nombre_producto,'mocha')
-      
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-    
+
+    try{
+    const response = await axios(config);
+  
+      id_producto = await response.data._id;
+      url_producto = await response.data.url
+      assert.equal(response.data.nombre,nombre_producto)
+      assert.equal(response.data.descripcion,descripcion_producto)
+      assert.equal(response.data.precio,precio_producto)
+      assert.equal(response.data.stock,stock_producto)  
+  
+    }catch(e) {
+      console.log(e);
+    }
+    return
 })
 
 //------------------------------------------------------------------------------------------
-/*
-it("traer producto",()=>{
+
+it("traer producto",async ()=>{
+  
   var config = {
     method: 'get',
     url: `http://localhost:8080/producto/${id_producto}`,
@@ -56,13 +63,18 @@ it("traer producto",()=>{
     }
   };
   
-  axios(config)
-  .then(function (response) {
-    console.log(JSON.stringify(response.data));
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+  try{
+  const response = await axios(config);
+  
+  assert.equal(response.data[0].nombre,nombre_producto)
+  assert.equal(response.data[0].descripcion,descripcion_producto)
+  assert.equal(response.data[0].precio,precio_producto)
+  assert.equal(response.data[0].stock,stock_producto) 
+  }catch(e) {
+   console.log(e);
+  }
+  
+  return
   
 })
   
@@ -76,7 +88,7 @@ it("actualizar producto", async ()=>{
     "descripcion": "descripcion actualizada mocha",
     "precio": 2323,
     "stock": 32,
-    "urldos": "nombremqRdmcp66O.png"
+    "urldos": url_producto
   });
   
   var config = {
@@ -88,21 +100,23 @@ it("actualizar producto", async ()=>{
     },
     data : data
   };
-  
-  axios(config)
-  .then(function (response) {
-    //console.log(JSON.stringify(response.data));
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
+  try{
+  const response = await axios(config);
+    assert.equal(response.data.nombre,"actualizar mocha19")
+    assert.equal(response.data.descripcion,"descripcion actualizada mocha")
+    assert.equal(response.data.precio, 2323)
+    assert.equal(response.data.stock,32)
+  }catch(e) {
+    console.log(e);
+  }
+  return
   })
 
 
 //---------------------------------------------------------------------------------------------
 
-it("borrar producto",()=>{
+it("borrar producto",async ()=>{
+  
   var data = JSON.stringify({
     "url": `${url_producto}`
   });
@@ -116,15 +130,15 @@ it("borrar producto",()=>{
     },
     data : data
   };
-  
-  axios(config)
-  .then(function (response) {
-   // console.log(JSON.stringify(response.data));
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
- 
+
+  try{
+  const response = await axios(config);
+  assert.equal(response.data.deletedCount, 1);
+  }catch(e) {
+  console.log(e);
+  }
+    return
 })
-*/
+
+
 })

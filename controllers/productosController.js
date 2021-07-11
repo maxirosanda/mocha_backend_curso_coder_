@@ -43,7 +43,8 @@ catch (e) { loggerError.error(e) }
     try{
        producto = await Producto.find({_id: id}).lean()
        mensaje = await Mensaje.find({articulo: id}).lean()
-       await res.render(`producto`, {producto: producto,mensaje:mensaje}) 
+      // await res.render(`producto`, {producto: producto,mensaje:mensaje}) 
+         await res.json(producto)
     }
     catch (e) { loggerError.error(e) } 
     }
@@ -56,7 +57,8 @@ catch (e) { loggerError.error(e) }
       await producto.save()
       EDFile.mv(`./public/img/productos/${req.body.url}`,err => {
           if(err) return res.status(500).send({ message : err })
-          res.redirect("/agregar") 
+          //res.redirect("/agregar") 
+          res.json(producto)
           })
          
     }
@@ -86,7 +88,8 @@ exports.updateProducto = async (req, res, next) => {
     {$set:nuevoproducto},
     {new:true}
     )
-   await res.redirect(303, '/agregar') 
+   //await res.redirect(303, '/agregar') 
+   res.json(nuevoproducto)
   }
   catch (e) { loggerError.error(e) }
 
@@ -97,7 +100,8 @@ exports.updateProducto = async (req, res, next) => {
     try{
       fs.unlinkSync(path.join("public/img/productos/", req.body.url))
       producto = await  Producto.deleteOne({_id: id})
-      await res.redirect(303, '/agregar') 
+      //await res.redirect(303, '/agregar') 
+      res.json(producto)
     }
      catch (e) { loggerError.error(e) } 
 
